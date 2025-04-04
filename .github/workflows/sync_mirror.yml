@@ -31,13 +31,6 @@ jobs:
           run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
 
-          if [ "${{ run_id }}" == "null" ]; then
-            echo "Run ID is nil. Exiting..."
-            exit 1
-          else
-            echo "::set-output name=run_id::$run_id"
-          fi
-
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-validic
         run: |
@@ -47,13 +40,6 @@ jobs:
           
           run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
-
-          if [ "${{ run_id }}" == "null" ]; then
-            echo "Run ID is nil. Exiting..."
-            exit 1
-          else
-            echo "::set-output name=run_id::$run_id"
-          fi
           
       - name: Wait for both dependent mirrors to complete
         id: wait_for_dependant_mirrors
