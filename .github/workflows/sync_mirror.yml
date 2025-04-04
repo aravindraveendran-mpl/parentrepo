@@ -16,6 +16,7 @@ jobs:
           response=$(curl -X POST \
             https://api.github.com/repos/aravindraveendran-mpl/dependencyrepo/actions/workflows/sync_mirror.yml/dispatches \
             -H "Authorization: Bearer ${{ secrets.PACKAGES_GITHUB_PAT }}" \
+            -H "Accept: application/vnd.github+json" \
             -d '{"ref":"main"}')
 
           http_status=$(echo "$response" | tail -n 1)
@@ -34,6 +35,7 @@ jobs:
           response=$(curl -X POST \
             https://api.github.com/repos/aravindraveendran-mpl/dependencyrepo/actions/workflows/sync_mirror.yml/dispatches \
             -H "Authorization: Bearer ${{ secrets.PACKAGES_GITHUB_PAT }}" \
+            -H "Accept: application/vnd.github+json" \
             -d '{"ref":"main"}')
 
           echo "Response: $response"
@@ -63,7 +65,7 @@ jobs:
                     method: 'GET',
                     headers: {
                       'Authorization': `Bearer ${token}`,
-                      'Accept': 'application/vnd.github.v3+json'
+                      'Accept': 'application/vnd.github+json'
                     }
                   }
                 );
