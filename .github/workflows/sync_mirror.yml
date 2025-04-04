@@ -47,22 +47,22 @@ jobs:
         id: wait_for_dependant_mirrors
         run: |
           # Check if ios-contract is mirrored
-          while [ "$(gh run view ${steps.mirror_mobile-league-ios-contract.outputs.run_id} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
+          while [ "$(gh run view ${{steps.mirror_mobile-league-ios-contract.outputs.run_id}} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             sleep 10
           done
-          ios-contract-run-conclusion=$(gh run view ${steps.mirror_mobile-league-ios-contract.outputs.run_id} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          ios-contract-run-conclusion=$(gh run view ${{steps.mirror_mobile-league-ios-contract.outputs.run_id}} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
           if [ "$ios-contract-run-conclusion" != "success" ]; then
             echo "Workflow failed. Exiting..."
             exit 1
           fi
 
           # Check if ios-validic is mirrored
-          while [ "$(gh run view ${steps.mirror_mobile-league-ios-validic.outputs.run_id} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
+          while [ "$(gh run view ${{steps.mirror_mobile-league-ios-validic.outputs.run_id}} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             sleep 10
           done
-          ios-validic-run-conclusion=$(gh run view ${steps.mirror_mobile-league-ios-validic.outputs.run_id} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          ios-validic-run-conclusion=$(gh run view ${{steps.mirror_mobile-league-ios-validic.outputs.run_id}} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
           if [ "$ios-validic-run-conclusion" != "success" ]; then
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             exit 1
