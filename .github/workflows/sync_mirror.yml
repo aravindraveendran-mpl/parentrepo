@@ -51,7 +51,7 @@ jobs:
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             sleep 10
           done
-          ios-contract-run-conclusion=$(gh run view ${{steps.mirror_mobile-league-ios-contract.outputs.run_id}} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          ios-contract-run-conclusion="$(gh run view ${{steps.mirror_mobile-league-ios-contract.outputs.run_id}} --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')"
           if [ "$ios-contract-run-conclusion" != "success" ]; then
             echo "Workflow failed. Exiting..."
             exit 1
