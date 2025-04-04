@@ -15,24 +15,49 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Install Github CLI
+        run: sudo apt-get install -y gh
+
+      - name: Authenticate to Github CLI
+        run: gh auth login --with-token ${{ secrets.PACKAGES_GITHUB_PAT }}
+
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-contract
-        env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_GITHUB_PAT }}
         run: |
           echo "Hello"
+          gh workflow run sync_mirror.yml --ref main --repo aravindraveendran-mpl/dependencyrepo
+          echo "Waiting for 10 seconds to allow the workflow to start..."
+          sleep 10
+
+          run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
+          echo "Run ID: $run_id"
+
+          if [ "${{ run_id }}" == "null" ]; then
+            echo "Run ID is nil. Exiting..."
+            exit 1
+          else
+            echo "::set-output name=run_id::$run_id"
+          fi
 
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-validic
-        env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_GITHUB_PAT }}
         run: |
-          echo "Hello"
+          gh workflow run sync_mirror.yml --ref main --repo aravindraveendran-mpl/dependencyrepo
+          echo "Waiting for 10 seconds to allow the workflow to start..."
+          sleep 10
+
+          run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
+          echo "Run ID: $run_id"
+
+          if [ "${{ run_id }}" == "null" ]; then
+            echo "Run ID is nil. Exiting..."
+            exit 1
+          else
+            echo "::set-output name=run_id::$run_id"
+          fi
 
       - name: Wait for both dependent mirrors to complete
         id: wait_for_dependant_mirrors
-        env:
-          GITHUB_TOKEN: ${{ secrets.PACKAGES_GITHUB_PAT }}
         run: |
           ios-contract-run-id=${{ steps.mirror_mobile-league-ios-contract.outputs.run_id }}
           while [ "$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
