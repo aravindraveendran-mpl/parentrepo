@@ -18,6 +18,8 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.PACKAGES_GITHUB_PAT }}" \
             -d '{"ref":"main"}')
 
+          http_status=$(echo "$response" | tail -n 1)
+          echo "HTTP status: $http_status"
           echo "Response: $response"
 
           # Extract the run ID from the response
