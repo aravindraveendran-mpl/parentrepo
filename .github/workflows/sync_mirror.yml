@@ -28,6 +28,9 @@ jobs:
           gh workflow run sync_mirror.yml --ref main --repo aravindraveendran-mpl/dependencyrepo
           echo "Waiting for 10 seconds to allow the workflow to start..."
           sleep 10
+          
+          run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
+          echo "Run ID: $run_id"
 
       # - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
       #   id: mirror_mobile-league-ios-validic
