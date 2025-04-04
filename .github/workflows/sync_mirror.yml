@@ -19,7 +19,7 @@ jobs:
         run: sudo apt-get install -y gh
 
       - name: Authenticate to Github CLI
-        run: gh auth login --with-token ${{ secrets.PACKAGES_GITHUB_PAT }}
+        run: gh auth login --with-token <<< ${{ secrets.PACKAGES_GITHUB_PAT }}
 
       # - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
       #   id: mirror_mobile-league-ios-contract
