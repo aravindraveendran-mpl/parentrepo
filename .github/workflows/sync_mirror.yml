@@ -53,26 +53,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGES_GITHUB_PAT }}
         run: |
-          mobile-league-ios-contract_run_id=${{ steps.mirror_mobile-league-ios-contract.outputs.run_id }}
-          while [ "$(gh run view $mobile-league-ios-contract_run_id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
+          ios-contract-run-id=${{ steps.mirror_mobile-league-ios-contract.outputs.run_id }}
+          while [ "$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             sleep 10
           done
-          mobile-league-ios-contract_run_conclusion=$(gh run view $mobile-league-ios-contract_run_id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
-          echo "${mobile-league-ios-contract_run) completed with conclusion: $(mobile-league-ios-contract_run_conclusion)"
-          if [ "$mobile-league-ios-contract_run_conclusion" != "success" ]; then
+          ios-contract-run-conclusion=$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          echo "${mobile-league-ios-contract_run) completed with conclusion: $(ios-contract-run-conclusion)"
+          if [ "$ios-contract-run-conclusion" != "success" ]; then
             echo "Workflow failed. Exiting..."
             exit 1
           fi
 
-          mobile-league-ios-validic_run_id=${{ steps.mirror_mobile-league-ios-validic.outputs.run_id }}
-          while [ "$(gh run view $mobile-league-ios-validic_run_id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
+          ios-validic-run-id=${{ steps.mirror_mobile-league-ios-validic.outputs.run_id }}
+          while [ "$(gh run view $ios-validic-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             sleep 10
           done
-          mobile-league-ios-validic_run_conclusion=$(gh run view $mobile-league-ios-validic_run_id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
-          echo "${mobile-league-ios-validic_run_id} completed with conclusion: $mobile-league-ios-contract_run_conclusion"
-          if [ "$mobile-league-ios-validic_run_conclusion" != "success" ]; then
+          ios-validic-run-conclusion=$(gh run view $ios-validic-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          echo "${ios-validic-run-id} completed with conclusion: $ios-validic-run-conclusion"
+          if [ "$ios-validic-run-conclusion" != "success" ]; then
             echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
             exit 1
           fi
