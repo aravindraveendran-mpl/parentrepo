@@ -22,7 +22,7 @@ jobs:
           run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
 
-          if [ "${{ steps.get-run-id.outputs.run_id }}" == "null" ]; then
+          if [ "${{ run_id }}" == "null" ]; then
             echo "Run ID is nil. Exiting..."
             exit 1
           else
@@ -41,7 +41,7 @@ jobs:
           run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
 
-          if [ "${{ steps.get-run-id.outputs.run_id }}" == "null" ]; then
+          if [ "${{ run_id }}" == "null" ]; then
             echo "Run ID is nil. Exiting..."
             exit 1
           else
