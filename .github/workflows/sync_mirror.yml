@@ -30,7 +30,7 @@ jobs:
           
           run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
-          echo "run_id=${RUN_ID}" >> $GITHUB_OUTPUT
+          echo "run_id=${run_id}" >> $GITHUB_OUTPUT
 
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-validic
@@ -41,7 +41,7 @@ jobs:
           
           run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
-          echo "run_id=${RUN_ID}" >> $GITHUB_OUTPUT
+          echo "run_id=${run_id}" >> $GITHUB_OUTPUT
 
       - name: Wait for both dependent mirrors to complete
         id: wait_for_dependant_mirrors
