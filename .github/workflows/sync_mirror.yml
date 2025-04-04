@@ -18,6 +18,8 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.PACKAGES_GITHUB_PAT }}" \
             -d '{"ref":"main"}')
 
+          echo "Response: $response"
+
           # Extract the run ID from the response
           RUN_ID=$(echo $response | jq -r '.workflow_run.id')
           echo "Run ID: $RUN_ID"
