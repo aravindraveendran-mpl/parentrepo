@@ -29,16 +29,6 @@ jobs:
           echo "Waiting for 10 seconds to allow the workflow to start..."
           sleep 10
 
-          # runid=$(gh run list --workflow sync_mirror.yml --branch main --limit 1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
-          # echo "Run ID: $runid"
-
-          # if [ "${{ runid }}" == "null" ]; then
-          #   echo "Run ID is nil. Exiting..."
-          #   exit 1
-          # else
-          #   echo "::set-output name=runid::$runid"
-          # fi
-
       # - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
       #   id: mirror_mobile-league-ios-validic
       #   run: |
