@@ -13,7 +13,7 @@ jobs:
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-contract
         run: |
-          response=(curl -X POST \
+          response=$(curl -X POST \
             https://api.github.com/repos/aravindraveendran-mpl/dependencyrepo/actions/workflows/sync_mirror.yml/dispatches \
             -H "Authorization: Bearer ${{ secrets.PACKAGES_GITHUB_PAT }}" \
             -d '{"ref":"main"}')
@@ -29,10 +29,12 @@ jobs:
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-validic
         run: |
-          response=(curl -X POST \
+          response=$(curl -X POST \
             https://api.github.com/repos/aravindraveendran-mpl/dependencyrepo/actions/workflows/sync_mirror.yml/dispatches \
             -H "Authorization: Bearer ${{ secrets.PACKAGES_GITHUB_PAT }}" \
             -d '{"ref":"main"}')
+
+          echo "Response: $response"
 
           # Extract the run ID from the response
           RUN_ID=$(echo $response | jq -r '.workflow_run.id')
