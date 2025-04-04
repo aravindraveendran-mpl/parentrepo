@@ -24,7 +24,6 @@ jobs:
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-contract
         run: |
-          echo "Hello"
           gh workflow run sync_mirror.yml --ref main --repo aravindraveendran-mpl/dependencyrepo
           echo "Waiting for 10 seconds to allow the workflow to start..."
           sleep 10
@@ -32,47 +31,54 @@ jobs:
           run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
 
-      # - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
-      #   id: mirror_mobile-league-ios-validic
-      #   run: |
-      #     gh workflow run sync_mirror.yml --ref main --repo aravindraveendran-mpl/dependencyrepo
-      #     echo "Waiting for 10 seconds to allow the workflow to start..."
-      #     sleep 10
+          if [ "${{ run_id }}" == "null" ]; then
+            echo "Run ID is nil. Exiting..."
+            exit 1
+          else
+            echo "::set-output name=run_id::$run_id"
+          fi
 
-      #     run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
-      #     echo "Run ID: $run_id"
+      - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
+        id: mirror_mobile-league-ios-validic
+        run: |
+          gh workflow run sync_mirror.yml --ref main --repo aravindraveendran-mpl/dependencyrepo
+          echo "Waiting for 10 seconds to allow the workflow to start..."
+          sleep 10
+          
+          run_id=$(gh run list --workflow sync_mirror.yml --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
+          echo "Run ID: $run_id"
 
-      #     if [ "${{ run_id }}" == "null" ]; then
-      #       echo "Run ID is nil. Exiting..."
-      #       exit 1
-      #     else
-      #       echo "::set-output name=run_id::$run_id"
-      #     fi
+          if [ "${{ run_id }}" == "null" ]; then
+            echo "Run ID is nil. Exiting..."
+            exit 1
+          else
+            echo "::set-output name=run_id::$run_id"
+          fi
+          
+      - name: Wait for both dependent mirrors to complete
+        id: wait_for_dependant_mirrors
+        run: |
+          ios-contract-run-id=${{ steps.mirror_mobile-league-ios-contract.outputs.run_id }}
+          while [ "$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
+            echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
+            sleep 10
+          done
+          ios-contract-run-conclusion=$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          echo "${mobile-league-ios-contract_run) completed with conclusion: $(ios-contract-run-conclusion)"
+          if [ "$ios-contract-run-conclusion" != "success" ]; then
+            echo "Workflow failed. Exiting..."
+            exit 1
+          fi
 
-      # - name: Wait for both dependent mirrors to complete
-      #   id: wait_for_dependant_mirrors
-      #   run: |
-      #     ios-contract-run-id=${{ steps.mirror_mobile-league-ios-contract.outputs.run_id }}
-      #     while [ "$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
-      #       echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
-      #       sleep 10
-      #     done
-      #     ios-contract-run-conclusion=$(gh run view $ios-contract-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
-      #     echo "${mobile-league-ios-contract_run) completed with conclusion: $(ios-contract-run-conclusion)"
-      #     if [ "$ios-contract-run-conclusion" != "success" ]; then
-      #       echo "Workflow failed. Exiting..."
-      #       exit 1
-      #     fi
-
-      #     ios-validic-run-id=${{ steps.mirror_mobile-league-ios-validic.outputs.run_id }}
-      #     while [ "$(gh run view $ios-validic-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
-      #       echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
-      #       sleep 10
-      #     done
-      #     ios-validic-run-conclusion=$(gh run view $ios-validic-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
-      #     echo "${ios-validic-run-id} completed with conclusion: $ios-validic-run-conclusion"
-      #     if [ "$ios-validic-run-conclusion" != "success" ]; then
-      #       echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
-      #       exit 1
-      #     fi
+          ios-validic-run-id=${{ steps.mirror_mobile-league-ios-validic.outputs.run_id }}
+          while [ "$(gh run view $ios-validic-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')" == "null" ]; do
+            echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
+            sleep 10
+          done
+          ios-validic-run-conclusion=$(gh run view $ios-validic-run-id --repo aravindraveendran-mpl/dependencyrepo --json conclusion --jq '.conclusion')
+          echo "${ios-validic-run-id} completed with conclusion: $ios-validic-run-conclusion"
+          if [ "$ios-validic-run-conclusion" != "success" ]; then
+            echo "Waiting for workflow aravindraveendran-mpl/dependencyrepo to complete..."
+            exit 1
+          fi
 
