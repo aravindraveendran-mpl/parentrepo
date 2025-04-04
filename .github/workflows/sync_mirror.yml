@@ -10,6 +10,11 @@ jobs:
     timeout-minutes: 60 # Set a timeout incase the dependency mirror never completes
     
     steps:
+      - name: Setup Github CLI
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-contract
         env:
@@ -22,12 +27,12 @@ jobs:
           run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
 
-          # if [ "${{ run_id }}" == "null" ]; then
-          #   echo "Run ID is nil. Exiting..."
-          #   exit 1
-          # else
-          #   echo "::set-output name=run_id::$run_id"
-          # fi
+          if [ "${{ run_id }}" == "null" ]; then
+            echo "Run ID is nil. Exiting..."
+            exit 1
+          else
+            echo "::set-output name=run_id::$run_id"
+          fi
 
       - name: Trigger mirror on aravindraveendran-mpl/dependencyrepo
         id: mirror_mobile-league-ios-validic
@@ -41,12 +46,12 @@ jobs:
           run_id=$(gh run list --workflow=sync_mirror.yml --branch=main --limit=1 --repo aravindraveendran-mpl/dependencyrepo --json databaseId --jq '.[0].databaseId')
           echo "Run ID: $run_id"
 
-          # if [ "${{ run_id }}" == "null" ]; then
-          #   echo "Run ID is nil. Exiting..."
-          #   exit 1
-          # else
-          #   echo "::set-output name=run_id::$run_id"
-          # fi
+          if [ "${{ run_id }}" == "null" ]; then
+            echo "Run ID is nil. Exiting..."
+            exit 1
+          else
+            echo "::set-output name=run_id::$run_id"
+          fi
 
       - name: Wait for both dependent mirrors to complete
         id: wait_for_dependant_mirrors
